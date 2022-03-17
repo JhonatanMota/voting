@@ -3,7 +3,9 @@ package com.test.corp.voting;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.corp.voting.repository.AgendaRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +39,7 @@ public class AgendaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         agendaRepository.deleteAll();
         om.setDateFormat(simpleDateFormat);
@@ -45,12 +47,16 @@ public class AgendaControllerTest {
 
     @Test
     public  void testAgendaEndpointWithGETList() throws Exception{
+//        String actualRecords = mockMvc.perform(get("/api/v1/agenda"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+
         String actualRecords = om.readValue(mockMvc.perform(get("/api/v1/agenda"))
                 .andDo(print())
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), new TypeReference<String>() {
+                .andExpect(status().isOk()).andReturn().toString(), new TypeReference<String>() {
         });
 
-        Assert.assertTrue(new ReflectionEquals(expectedRecords.get(i)).matches(actualRecords.get(i)));
+        Assertions.assertEquals("Hi, we had a agenda.",actualRecords);
     }
 
 
